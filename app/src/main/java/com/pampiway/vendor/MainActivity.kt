@@ -7,9 +7,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,9 +21,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Button
@@ -33,7 +32,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.ModalDrawer
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Switch
 import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -74,6 +72,11 @@ import com.pampiway.vendor.components.InputText
 import com.pampiway.vendor.components.InputTextWithIcon
 import com.pampiway.vendor.components.SmallButton
 import com.pampiway.vendor.components.SmallButtonBorder
+import com.pampiway.vendor.screens.CreateAccountScreen
+import com.pampiway.vendor.screens.CreateRegister
+import com.pampiway.vendor.screens.HelpSupport
+import com.pampiway.vendor.screens.WalletScreen2
+import com.pampiway.vendor.screens.inputHelp
 import com.pampiway.vendor.ui.theme.VendorTheme
 import com.pampiway.vendor.ui.theme.darkGrey
 import com.pampiway.vendor.ui.theme.lightBlack
@@ -155,15 +158,16 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                         })
                 }
                 composable("wallet") {
-                    WalletScreen(navController, drawerState,switchOn = switchON,
-                        onToggleChange = {
-                            if(switchON){
-                                switchON = false
-                            }else switchON = true
-                        })
+                    WalletScreen(navController, drawerState)
+                }
+                composable("wallet2") {
+                    WalletScreen2(navController)
                 }
                 composable("offer") {
                     OfferScreen(navController)
+                }
+                composable("Help") {
+                    HelpSupport(navController)
                 }
                 composable("account") {
                     AccountScreen(navController)
@@ -186,6 +190,7 @@ fun SideNav(
         "Wallet" to R.drawable.ic_wallet,  // Drawable Resource ID
         "Offer" to R.drawable.ic_offer,  // Drawable Resource ID
         "Notification" to Icons.Default.Notifications,  // Vector Icon
+        "Help" to R.drawable.ic_help,  // Vector Icon
         "Logout" to Icons.Default.ExitToApp  // Vector Icon
     )
 
@@ -354,7 +359,7 @@ fun TopBar(switchOn: Boolean,
 
 @Composable
 fun AuthScreen() {
-    GreetingPreview()
+    CreateRegister()
 }
 
 @Composable
@@ -404,8 +409,7 @@ fun DashboardScreen(navController: NavController,
 }
 
 @Composable
-fun WalletScreen(navController: NavController, drawerState: DrawerState,switchOn: Boolean,
-                 onToggleChange: (Boolean) -> Unit) {
+fun WalletScreen(navController: NavController, drawerState: DrawerState) {
     var currentRoute by remember { mutableStateOf("wallet") }
 
     ModalDrawer(
@@ -424,19 +428,80 @@ fun WalletScreen(navController: NavController, drawerState: DrawerState,switchOn
             )
         }
     ) {
-        // Wallet content
-        val coroutineScope = rememberCoroutineScope()
-        Column() {
-            TopBar(
-                switchOn = switchOn,
-                onMenuClick = { coroutineScope.launch {
-                    drawerState.open()
-                } },
-                text = "Wallet",
-                isChecked = switchOn,
-                onToggleChange = onToggleChange
-            )
-            Text("Welcome to the Wallet!")
+
+        Column(modifier = Modifier.fillMaxSize()) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Color.White)
+                    .padding(vertical = 16.dp, horizontal = 12.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 24.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+
+                    Image(
+                        painterResource(id = R.drawable.ic_arrow),
+                        contentDescription = "back",
+                        modifier = Modifier.size(32.dp),
+                        contentScale = ContentScale.Fit
+                    )
+
+
+                    Text(
+                        text = "Wallet",
+                        style = TextStyle(
+                            fontFamily = mFont.fsbold,
+                            fontWeight = FontWeight.Bold,
+                            color = lightBlack,
+                            fontSize = 26.sp
+                        ), modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+
+
+
+
+
+            }
+
+
+            // Wallet content
+            Column(
+                modifier = Modifier.fillMaxWidth().height(200.dp).padding(12.dp).border(
+                    width = 2.dp,
+                    color = mred, // Change to your desired border color
+                    shape = RoundedCornerShape(12.dp) // Adjust the corner radius as needed
+                ),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Total Earning",
+                    style = TextStyle(
+                        fontFamily = mFont.fsregular,
+                        color = darkGrey,
+                        fontSize = 17.sp
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+
+                Text(
+                    text = "₹4500",
+                    style = TextStyle(
+                        fontFamily = mFont.fssemibold,
+                        color = mred,
+                        fontSize = 26.sp
+                    )
+                )
+            }
         }
     }
 }
@@ -472,124 +537,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 //    GreetingPreview()
     CreateAccountScreen()
 }
-@Composable
-fun CreateAccountScreen() {
-    Column(
-        modifier = Modifier
-            .padding(top = 32.dp)
-            .fillMaxSize()
-            .background(color = Color.White)
-            .verticalScroll(rememberScrollState()) // Enable vertical scrolling
-            .padding(vertical = 16.dp, horizontal = 12.dp)
-    ) {
-        Text(
-            text = "Create Account",
-            style = TextStyle(
-                fontFamily = mFont.fsbold,
-                fontWeight = FontWeight.Bold,
-                color = mred,
-                fontSize = 26.sp,
-                textAlign = TextAlign.Center
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(36.dp))
 
-        inputComponent(text = "Name")
-        inputComponent(text = "Phone Number")
-        inputComponent(text = "Email")
-        inputComponent(text = "City")
-        inputComponent(text = "District")
-        inputComponent(text = "State")
-        inputComponent(text = "Pincode")
-        inputComponent(text = "Password")
-        inputComponent(text = "Confirm Password")
-        Spacer(modifier = Modifier.height(36.dp))
-        SmallButton(onClick = {
-            navController.navigate("dashboard")
-        }, text = "Create")
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    VendorTheme {
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = Color.White)
-                .padding(vertical = 16.dp, horizontal = 12.dp)
-        ){
-            Text(text = "Let's Login",
-                style = TextStyle(
-                    fontFamily = mFont.fsbold,
-                    fontWeight = FontWeight.Bold,
-                    color = lightBlack,
-                    fontSize = 26.sp
-                )
-            )
-
-            Row(modifier = Modifier
-                .padding(top = 12.dp)
-                .fillMaxWidth()
-                .height(150.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center){
-
-                Image(painterResource(id = R.drawable.logopampi),
-                    contentDescription = "logo",
-                    modifier = Modifier.size(150.dp),
-                    contentScale = ContentScale.Fit)
-
-            }
-
-            Divider(
-                color = Color.White,              // Set the color of the divider
-                thickness = 4.dp,                // Set the thickness of the divider
-                modifier = Modifier.fillMaxWidth() // Make the divider take full width
-            )
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .align(Alignment.CenterHorizontally)
-            ) {
-                Divider(
-                    color = mred, // Set the color of the divider
-                    thickness = 4.dp, // Set the thickness of the divider
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.Center) // Center the divider vertically within the Box
-                )
-                Text(
-                    text = "DRIVER",
-                    style = TextStyle(
-                        fontFamily = mFont.fsbold,
-                        fontWeight = FontWeight.Bold,
-                        color = mred,
-                        fontSize = 26.sp
-                    ),
-                    modifier = Modifier
-                        .align(Alignment.Center) // Center the text within the Box
-                        .background(Color.White)
-                        .padding(8.dp) // Optional padding
-                )
-
-
-            }
-
-
-            Spacer(modifier = Modifier.height(48.dp))
-
-            inputText(text = "abc")
-
-        }
-
-    }
-}
 
 @Composable
 fun inputComponent(text: String){

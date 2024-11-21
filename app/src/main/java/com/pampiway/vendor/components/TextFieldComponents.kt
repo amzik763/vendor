@@ -70,6 +70,49 @@ fun InputText(
     )
 }
 
+@Composable
+fun InputTextLarge(
+    modifier: Modifier = Modifier,
+    text: String,
+    maxLine: Int = 1,
+    onTextChange: (String) -> Unit,
+    onImeAction:() -> Unit = {},
+    color: Color,
+    maxLength: Int,
+    keyboardOptions: KeyboardOptions
+
+) {
+
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    OutlinedTextField(
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = mred,
+            unfocusedBorderColor = darkGrey,
+            focusedLabelColor = Color.DarkGray
+        ),
+        value = text,
+        onValueChange = {val newText = it.take(250)
+            onTextChange(newText)},
+        maxLines = 5,
+        keyboardOptions = keyboardOptions,
+        keyboardActions =  KeyboardActions(onDone = {
+            onImeAction()
+            keyboardController?.hide()
+
+        }),
+        modifier = Modifier.fillMaxWidth()
+            .height(150.dp),
+        textStyle = LocalTextStyle.current.copy(
+            fontWeight = FontWeight.SemiBold,
+            color = color,
+            fontSize = 14.sp
+        ),
+        shape = RoundedCornerShape(6.dp)
+    )
+}
+
 
 @Composable
 fun InputTextWithIcon(
