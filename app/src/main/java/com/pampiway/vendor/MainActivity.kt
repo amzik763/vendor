@@ -1,6 +1,8 @@
 package com.pampiway.vendor
 
 import android.annotation.SuppressLint
+import android.net.ConnectivityManager
+import android.net.Network
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -43,6 +45,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.rememberDrawerState
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -68,6 +71,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.amzi.mastercellusv2.allViewModels.RegisterViewModel
+import com.amzi.mastercellusv2.allViewModels.factories.RegisterViewModelFactory
+import com.amzi.mastercellusv2.networks.AuthAPIs
+import com.amzi.mastercellusv2.networks.HomeAutoApi
+import com.amzi.mastercellusv2.networks.RetrofitBuilder
+import com.amzi.mastercellusv2.repository.AuthRepo
+import com.amzi.mastercellusv2.repository.HomeAutoRepo
 import com.pampiway.vendor.components.InputText
 import com.pampiway.vendor.components.InputTextWithIcon
 import com.pampiway.vendor.components.SmallButton
@@ -82,26 +92,67 @@ import com.pampiway.vendor.ui.theme.darkGrey
 import com.pampiway.vendor.ui.theme.lightBlack
 import com.pampiway.vendor.ui.theme.mblue
 import com.pampiway.vendor.ui.theme.mred
+import com.pampiway.vendor.utility.NetworkMonitor
 import com.pampiway.vendor.utility.Switch2
 import com.pampiway.vendor.utility.mFont
+import com.pampiway.vendor.utility.myComponent.authAPI
+import com.pampiway.vendor.utility.myComponent.authRepo
+import com.pampiway.vendor.utility.myComponent.homeAutoApi
+import com.pampiway.vendor.utility.myComponent.homeAutoRepo
 import com.pampiway.vendor.utility.myComponent.navController
+import com.pampiway.vendor.utility.myComponent.registerViewModel
+import com.pampiway.vendor.utility.myComponent.registerViewModelFactory
+import com.pampiway.vendor.utility.showLogs
+import com.pampiway.vendor.utility.showSnackBarNow
+import com.pampiway.vendor.utility.snacks
+import com.pampiway.vendor.utility.snacks.scaffoldState
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+
+    val networkCallback = object : ConnectivityManager.NetworkCallback() {
+
+        override fun onAvailable(network: Network) {
+            // Called when a network is available
+            showLogs("MAIN: ","Connected")
+            showSnackBarNow("Connected",applicationContext)
+        }
+        override fun onLost(network: Network) {
+            // Called when a network is lost
+            showLogs("MAIN: ","Disconnected")
+            showSnackBarNow("No Network",applicationContext)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
+        authAPI = RetrofitBuilder.create(this).create(AuthAPIs::class.java)
+        homeAutoApi = RetrofitBuilder.create(this).create(HomeAutoApi::class.java)
+        authRepo = AuthRepo(authAPI, context = applicationContext)
+        homeAutoRepo = HomeAutoRepo(homeAutoApi, context = applicationContext)
+        registerViewModelFactory = RegisterViewModelFactory(authRepo, homeAutoRepo)
+        registerViewModel = registerViewModelFactory.create(RegisterViewModel::class.java)
+
         setContent {
+
             VendorTheme {
+                snacks.scaffoldState  = rememberScaffoldState()
+                snacks.coroutineScope = rememberCoroutineScope()
                 navController = rememberNavController()
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(modifier = Modifier.fillMaxSize(),
+                    scaffoldState = snacks.scaffoldState
+                    ) { innerPadding ->
                    /* Greeting(
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
                     )*/
                     AppNavigation(modifier = Modifier.padding(innerPadding))
                 }
+                val networkMonitor = NetworkMonitor(applicationContext)
+                showLogs("temp",networkMonitor.checkNowForInternet().toString())
+                networkMonitor.registerNetworkCallback(networkCallback)
             }
         }
     }
@@ -539,6 +590,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 }
 
 
+/*
 @Composable
 fun inputComponent(text: String){
 
@@ -571,7 +623,37 @@ fun inputComponent(text: String){
 
 
 }
+*/
 
+@Composable
+fun inputComponent(text: String, value: String, onValueChange: (String) -> Unit) {
+    Text(
+        text = text,
+        style = TextStyle(
+            fontFamily = mFont.fsregular,
+            color = darkGrey,
+            fontSize = 17.sp
+        )
+    )
+
+    Spacer(modifier = Modifier.height(6.dp))
+
+    InputText(
+        modifier = Modifier
+            .padding(top = 2.dp, bottom = 4.dp),
+        text = value,
+        color = Color.Black,
+        maxLine = 1,
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Next,
+            keyboardType = KeyboardType.Text
+        ),
+        onTextChange = onValueChange,
+        maxLength = 10
+    )
+
+    Spacer(modifier = Modifier.height(14.dp))
+}
 @Composable
 fun inputText(text: String) {
 
