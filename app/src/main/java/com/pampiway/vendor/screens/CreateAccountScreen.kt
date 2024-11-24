@@ -87,7 +87,7 @@ fun CreateAccountScreen() {
             Log.d("InputScreen", "Password: $password")
             Log.d("InputScreen", "Confirm Password: $confirmPassword")
             registerViewModel.createAccount(name, phoneNumber, email, city, district, state, pincode, password, confirmPassword)
-            navController.navigate("dashboard")
+            navController.navigate("Home")
 
         }, text = "Create")
     }

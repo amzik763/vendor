@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pampiway.vendor.ui.theme.lightGrey
 import com.pampiway.vendor.ui.theme.mgreen
+import com.pampiway.vendor.ui.theme.mred
 
 @Composable
 fun Switch2(
@@ -66,7 +67,7 @@ fun Switch2(
     ) {
         // Track (no stroke)
         drawRoundRect(
-            color = if (switchON) mgreen else lightGrey, // Blue when ON, Gray when OFF
+            color = if (switchON) mgreen else mred, // Blue when ON, Gray when OFF
             cornerRadius = CornerRadius(x = 12.dp.toPx(), y = 12.dp.toPx())  // Rounded corners
         )
 

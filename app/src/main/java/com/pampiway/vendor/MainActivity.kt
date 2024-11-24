@@ -109,14 +109,23 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
+    var initial = 0;
     val networkCallback = object : ConnectivityManager.NetworkCallback() {
 
         override fun onAvailable(network: Network) {
+            if(initial == 0) {
+                initial++
+                return
+            }
             // Called when a network is available
             showLogs("MAIN: ","Connected")
             showSnackBarNow("Connected",applicationContext)
         }
         override fun onLost(network: Network) {
+            if(initial == 0) {
+                initial++
+                return
+            }
             // Called when a network is lost
             showLogs("MAIN: ","Disconnected")
             showSnackBarNow("No Network",applicationContext)
@@ -155,7 +164,15 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+//        networkMonitor.unregisterNetworkCallback(networkCallback)
+
+    }
 }
+
+
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -176,16 +193,16 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 selectedRoute = currentRoute ?: "", // Pass the current route dynamically
                 onItemSelected = { route ->
                     navController.navigate(route) {
-                        popUpTo(navController.graph.startDestinationId) { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
+//                        popUpTo(navController.graph.startDestinationId) { saveState = true }
+//                        launchSingleTop = true
+//                        restoreState = true
                     }
                 }
             )
         },
         bottomBar = {
             // Bottom Navigation only on Dashboard and Wallet screens
-            if (currentRoute in listOf("dashboard", "wallet")) {
+            if (currentRoute in listOf("Home", "wallet", "History")) {
                 BottomNav(navController,currentRoute.toString())
 
             }
@@ -199,7 +216,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 composable("register") {
                     RegisterScreen()
                 }
-                composable("dashboard") {
+                composable("Home") {
                     DashboardScreen(navController, drawerState,switchOn = switchON,
                         onToggleChange = {
                             if(switchON){
@@ -289,7 +306,12 @@ fun SideNav(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onItemSelected(label.lowercase()) }
+                    .clickable {
+                        onItemSelected(label.lowercase())
+                        coroutineScope.launch {
+                            drawerState.close() // Close the sidebar
+                        }
+                    }
                     .padding(vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -336,10 +358,10 @@ fun BottomNav(navController: NavController, currentRoute: String) {
                 )
             },
             label = { Text("Home") },
-            selected = currentRoute == "dashboard", // Check if this route is selected
+            selected = currentRoute == "Home", // Check if this route is selected
             selectedContentColor = mred, // Selected item tint
             unselectedContentColor = lightBlack, // Unselected item tint
-            onClick = { navController.navigate("dashboard") }
+            onClick = { navController.navigate("Home") }
         )
         BottomNavigationItem(
             icon = {
@@ -432,7 +454,7 @@ fun DashboardScreen(navController: NavController,
                     drawerState: DrawerState,
                     switchOn: Boolean,
                     onToggleChange: (Boolean) -> Unit) {
-    var currentRoute by remember { mutableStateOf("dashboard") }
+    var currentRoute by remember { mutableStateOf("Home") }
 
     ModalDrawer(
         drawerState = drawerState,
@@ -442,9 +464,9 @@ fun DashboardScreen(navController: NavController,
                 onItemSelected = { route ->
                     currentRoute = route
                     navController.navigate(route) {
-                        popUpTo(navController.graph.startDestinationId) { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
+//                        popUpTo(navController.graph.startDestinationId) { saveState = true }
+//                        launchSingleTop = true
+//                        restoreState = true
                     }
                 }
             )
@@ -479,9 +501,9 @@ fun WalletScreen(navController: NavController, drawerState: DrawerState) {
                 onItemSelected = { route ->
                     currentRoute = route
                     navController.navigate(route) {
-                        popUpTo(navController.graph.startDestinationId) { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
+//                        popUpTo(navController.graph.startDestinationId) { saveState = true }
+//                        launchSingleTop = true
+//                        restoreState = true
                     }
                 }
             )
@@ -672,11 +694,11 @@ fun inputText(text: String) {
         style = TextStyle(
             fontFamily = mFont.fsregular,
             color = darkGrey,
-            fontSize = 20.sp
+            fontSize = 18.sp
         )
     )
 
-    Spacer(modifier = Modifier.height(12.dp))
+    Spacer(modifier = Modifier.height(8.dp))
 
     InputText(
         modifier = Modifier
@@ -692,33 +714,36 @@ fun inputText(text: String) {
     )
 
 
-    Spacer(modifier = Modifier.height(24.dp))
+    Spacer(modifier = Modifier.height(20.dp))
 
     Text(text = "Password",
         style = TextStyle(
             fontFamily = mFont.fsregular,
             color = darkGrey,
-            fontSize = 20.sp
+            fontSize = 18.sp
         )
     )
 
-    Spacer(modifier = Modifier.height(12.dp))
+    Spacer(modifier = Modifier.height(8.dp))
 
     InputTextWithIcon(
         modifier = Modifier
             .padding(top = 2.dp, bottom = 4.dp),
-        text = inputEmail,
+        text = inputPassword,
         color = Color.Black,
         maxLine = 1,
-        iconResId = R.drawable.eyepassword,
+        iconResIdVisible = R.drawable.ic_eyeopen, // Icon for visible password
+        iconResIdHidden = R.drawable.ic_eyeclose, // Icon for hidden password
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Done,
-            keyboardType = KeyboardType.Password),
+            keyboardType = KeyboardType.Password
+        ),
         onTextChange = { inputPassword = it },
+        onImeAction = { /* Handle Done action */ },
         maxLength = 10
     )
 
-    Spacer(modifier = Modifier.height(2.dp))
+    Spacer(modifier = Modifier.height(4.dp))
 
 
     Text(
@@ -726,7 +751,7 @@ fun inputText(text: String) {
         style = TextStyle(
             fontFamily = mFont.fsregular,
             color = mblue,
-            fontSize = 18.sp,
+            fontSize = 15.sp,
             textAlign = TextAlign.End // Align the text to the end
         ),
         modifier = Modifier.fillMaxWidth() // Make the Text take the maximum width
@@ -736,14 +761,14 @@ fun inputText(text: String) {
     Spacer(modifier = Modifier.height(48.dp))
     
     SmallButton(onClick = {
-        navController.navigate("register")
+        navController.navigate("Home")
     }, text = "Submit")
 
     Spacer(modifier = Modifier.height(12.dp))
 
     
     SmallButtonBorder(onClick = {
-        navController.navigate("dashboard")
+        navController.navigate("register")
     }, text = "Become A Delivery Partner")
     
 

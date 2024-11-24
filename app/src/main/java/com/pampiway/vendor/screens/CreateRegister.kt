@@ -104,7 +104,7 @@ fun CreateRegister() {
             }
 
 
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             inputText(text = "abc")
 
