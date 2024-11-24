@@ -1,13 +1,11 @@
 package com.amzi.mastercellusv2.repository
 
 import android.content.Context
-import android.util.Log
 import com.amzi.mastercellusv2.networks.HomeAutoApi
 import com.pampiway.vendor.utility.TokenStorage
 import com.pampiway.vendor.utility.showLogs
-import retrofit2.http.Field
 
-class HomeAutoRepo(val homeAutoApi: HomeAutoApi, private val context: Context) {
+class DeliveryRepo(val homeAutoApi: HomeAutoApi, private val context: Context) {
 
     init {
         showLogs("Home Repo:","Home Repo Created")

@@ -15,7 +15,7 @@ interface HomeAutoApi {
 
 
     @FormUrlEncoded
-    @POST("/api/delivery-boy/create")
+    @POST("/api/deliveryboy/create")
     suspend fun createAccount(
         @Field("email") email: String,
         @Field("password") password: String,

@@ -7,8 +7,8 @@ import retrofit2.http.POST
 interface AuthAPIs {
 
     @FormUrlEncoded
-    @POST("/api/delivery-boy/create")
-    suspend fun createAzsccount(
+    @POST("/api/deliveryboy/create")
+    suspend fun createAccount(
         @Field("email") email: String,
         @Field("password") password: String,
         @Field("full_name") fullName: String,
@@ -20,21 +20,7 @@ interface AuthAPIs {
         @Field("confirm_password") confirmPassword: String
     ): Response<String>
 
-    @FormUrlEncoded
-    @POST("/master/api/confirmuser")
-    suspend fun verify(
-        @Field("mobile_number") mobile_number: String,
-        @Field("password") password: String,
-        @Field("password_confirm") password_confirm: String,
-        @Field("otp") otp: String
-    ): Response<String>
 
-    @FormUrlEncoded
-    @POST("/master/api/login")
-    suspend fun login(
-        @Field("username_or_mobile") username_or_mobile: String,
-        @Field("password") password: String
-    ): Response<String>
 
 }
 

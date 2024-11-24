@@ -34,7 +34,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.ModalDrawer
 import androidx.compose.material.Scaffold
-import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -77,7 +76,7 @@ import com.amzi.mastercellusv2.networks.AuthAPIs
 import com.amzi.mastercellusv2.networks.HomeAutoApi
 import com.amzi.mastercellusv2.networks.RetrofitBuilder
 import com.amzi.mastercellusv2.repository.AuthRepo
-import com.amzi.mastercellusv2.repository.HomeAutoRepo
+import com.amzi.mastercellusv2.repository.DeliveryRepo
 import com.pampiway.vendor.components.InputText
 import com.pampiway.vendor.components.InputTextWithIcon
 import com.pampiway.vendor.components.SmallButton
@@ -85,8 +84,9 @@ import com.pampiway.vendor.components.SmallButtonBorder
 import com.pampiway.vendor.screens.CreateAccountScreen
 import com.pampiway.vendor.screens.CreateRegister
 import com.pampiway.vendor.screens.HelpSupport
+import com.pampiway.vendor.screens.History
+import com.pampiway.vendor.screens.Notification
 import com.pampiway.vendor.screens.WalletScreen2
-import com.pampiway.vendor.screens.inputHelp
 import com.pampiway.vendor.ui.theme.VendorTheme
 import com.pampiway.vendor.ui.theme.darkGrey
 import com.pampiway.vendor.ui.theme.lightBlack
@@ -98,14 +98,13 @@ import com.pampiway.vendor.utility.mFont
 import com.pampiway.vendor.utility.myComponent.authAPI
 import com.pampiway.vendor.utility.myComponent.authRepo
 import com.pampiway.vendor.utility.myComponent.homeAutoApi
-import com.pampiway.vendor.utility.myComponent.homeAutoRepo
+import com.pampiway.vendor.utility.myComponent.deliveryRepo
 import com.pampiway.vendor.utility.myComponent.navController
 import com.pampiway.vendor.utility.myComponent.registerViewModel
 import com.pampiway.vendor.utility.myComponent.registerViewModelFactory
 import com.pampiway.vendor.utility.showLogs
 import com.pampiway.vendor.utility.showSnackBarNow
 import com.pampiway.vendor.utility.snacks
-import com.pampiway.vendor.utility.snacks.scaffoldState
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -131,8 +130,8 @@ class MainActivity : ComponentActivity() {
         authAPI = RetrofitBuilder.create(this).create(AuthAPIs::class.java)
         homeAutoApi = RetrofitBuilder.create(this).create(HomeAutoApi::class.java)
         authRepo = AuthRepo(authAPI, context = applicationContext)
-        homeAutoRepo = HomeAutoRepo(homeAutoApi, context = applicationContext)
-        registerViewModelFactory = RegisterViewModelFactory(authRepo, homeAutoRepo)
+        deliveryRepo = DeliveryRepo(homeAutoApi, context = applicationContext)
+        registerViewModelFactory = RegisterViewModelFactory(authRepo, deliveryRepo)
         registerViewModel = registerViewModelFactory.create(RegisterViewModel::class.java)
 
         setContent {
@@ -220,6 +219,16 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 composable("Help") {
                     HelpSupport(navController)
                 }
+
+                composable("Notification") {
+                    Notification(navController)
+                }
+
+
+                composable("History") {
+                    History(navController)
+                }
+
                 composable("account") {
                     AccountScreen(navController)
                 }
@@ -355,10 +364,10 @@ fun BottomNav(navController: NavController, currentRoute: String) {
                 )
             },
             label = { Text("History") },
-            selected = currentRoute == "account", // Check if this route is selected
+            selected = currentRoute == "History", // Check if this route is selected
             selectedContentColor = mred, // Selected item tint
             unselectedContentColor = lightBlack, // Unselected item tint
-            onClick = { navController.navigate("account") }
+            onClick = { navController.navigate("History") }
         )
         // Add more BottomNavigationItem if needed
     }
@@ -417,7 +426,6 @@ fun AuthScreen() {
 fun RegisterScreen() {
     CreateAccountScreen()
 }
-
 
 @Composable
 fun DashboardScreen(navController: NavController,

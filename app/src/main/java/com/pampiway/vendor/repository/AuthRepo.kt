@@ -15,7 +15,7 @@ class AuthRepo(authAPIs: AuthAPIs,private val context: Context) {
     }
     val authAPI = authAPIs
 
-    suspend fun verify( mobile_number: String, password: String, password_confirm: String, otp: String){
+    /*suspend fun verify( mobile_number: String, password: String, password_confirm: String, otp: String){
 
         try{
             val verifyRes = authAPI.verify(mobile_number, password, password_confirm, otp)
@@ -29,7 +29,7 @@ class AuthRepo(authAPIs: AuthAPIs,private val context: Context) {
             showLogs("Error: ",e.toString())
         }
     }
-
+*/
 
     // Optional: Logout function to clear tokens
     fun logout() {
