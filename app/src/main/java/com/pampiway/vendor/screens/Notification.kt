@@ -97,7 +97,9 @@ fun Notification(navController: NavHostController) {
             Image(
                 painterResource(id = R.drawable.ic_arrow),
                 contentDescription = "back",
-                modifier = Modifier.size(32.dp),
+                modifier = Modifier.size(32.dp).clickable {
+                    navController.popBackStack()
+                },
                 contentScale = ContentScale.Fit)
             Text(text = "Notification",
                 style = TextStyle(

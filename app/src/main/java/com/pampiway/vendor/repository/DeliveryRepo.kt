@@ -3,8 +3,11 @@ package com.amzi.mastercellusv2.repository
 import android.content.Context
 import android.widget.Toast
 import com.amzi.mastercellusv2.networks.HomeAutoApi
+import com.pampiway.vendor.response.createAccountRes
 import com.pampiway.vendor.utility.TokenStorage
+import com.pampiway.vendor.utility.myComponent
 import com.pampiway.vendor.utility.showLogs
+import retrofit2.Response
 
 class DeliveryRepo(val homeAutoApi: HomeAutoApi, private val context: Context) {
 
@@ -66,19 +69,32 @@ class DeliveryRepo(val homeAutoApi: HomeAutoApi, private val context: Context) {
         return try {
 
             val res = homeAutoApi.createAccount(email, password, name, phoneNumber, city, district, state, Integer.parseInt(pincode), confirmPassword )
-
             if(res.isSuccessful){
-                showLogs("API FAILED", "API SUCCESS")
+                showLogs("API SUC", "API SUCCESS")
+                showLogs("API SUC", res.body().toString())
+                myComponent.registerViewModel.showErrorDialog()
+                myComponent.registerViewModel.createAccountRes =  res.body()
+                showLogs("API SUCCESS",  myComponent.registerViewModel.createAccountRes?.message?:"")
+                myComponent.registerViewModel.errorMessage.value = "Account Created Successfully!!"
                 return true
 
             }else{
                 showLogs("API FAILED", "API FAILED")
-                Toast.makeText(context,"Error",Toast.LENGTH_SHORT)
+                showLogs("API FAiled", res.body().toString())
+
+                myComponent.registerViewModel.createAccountRes =  res.body()
+                showLogs("API FAILED", res.message()?:"Error")
+                showLogs("API failed errorbody", res.errorBody().toString()?:"Error")
+                showLogs("API FAILED",  myComponent.registerViewModel.createAccountRes?.message?:"")
+                myComponent.registerViewModel.showErrorDialog()
+                myComponent.registerViewModel.errorMessage.value = res.body()?.message?:"Error! Try again"
                 return false
             }
         }catch (e:Exception){
             showLogs("bigerror",e.printStackTrace().toString())
-            showLogs("API FAILED", "API ERROR")
+            showLogs("API ERRR", "API ERROR")
+            myComponent.registerViewModel.showErrorDialog()
+            myComponent.registerViewModel.errorMessage.value = e.message.toString()
             return false
 
         }

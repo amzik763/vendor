@@ -1,10 +1,13 @@
 package com.amzi.mastercellusv2.allViewModels
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amzi.mastercellusv2.repository.AuthRepo
 import com.amzi.mastercellusv2.repository.DeliveryRepo
+import com.pampiway.vendor.response.createAccountRes
 import com.pampiway.vendor.utility.showLogs
 import kotlinx.coroutines.launch
 
@@ -12,7 +15,7 @@ class RegisterViewModel(authRepo: AuthRepo, deliveryRepo: DeliveryRepo) : ViewMo
 
     var errors: MutableMap<String, String>? = null
     var isErrorDialogVisible = mutableStateOf(false)
-
+    var createAccountRes: createAccountRes? by mutableStateOf(null)
     var errorMessage = mutableStateOf("")
 
     var mPassword = mutableStateOf("")
