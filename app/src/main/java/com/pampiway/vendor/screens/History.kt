@@ -3,6 +3,7 @@ package com.pampiway.vendor.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -60,6 +61,7 @@ import com.pampiway.vendor.ui.theme.mgreenlight
 import com.pampiway.vendor.ui.theme.mred
 import com.pampiway.vendor.ui.theme.mredlight
 import com.pampiway.vendor.utility.mFont
+import com.pampiway.vendor.utility.myComponent
 import com.pampiway.vendor.utility.myComponent.navController
 
 
@@ -120,7 +122,9 @@ fun History(navController: NavHostController) {
             Image(
                 painterResource(id = R.drawable.ic_arrow),
                 contentDescription = "back",
-                modifier = Modifier.size(32.dp),
+                modifier = Modifier.size(32.dp).clickable {
+                    myComponent.navController.popBackStack()
+                },
                 contentScale = ContentScale.Fit
             )
             Text(

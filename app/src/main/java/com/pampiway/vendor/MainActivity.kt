@@ -85,6 +85,7 @@ import com.pampiway.vendor.screens.CreateAccountScreen
 import com.pampiway.vendor.screens.CreateRegister
 import com.pampiway.vendor.screens.HelpSupport
 import com.pampiway.vendor.screens.History
+import com.pampiway.vendor.screens.Logout
 import com.pampiway.vendor.screens.Notification
 import com.pampiway.vendor.screens.WalletScreen2
 import com.pampiway.vendor.ui.theme.VendorTheme
@@ -94,7 +95,9 @@ import com.pampiway.vendor.ui.theme.mblue
 import com.pampiway.vendor.ui.theme.mred
 import com.pampiway.vendor.utility.NetworkMonitor
 import com.pampiway.vendor.utility.Switch2
+import com.pampiway.vendor.utility.mDialog
 import com.pampiway.vendor.utility.mFont
+import com.pampiway.vendor.utility.myComponent
 import com.pampiway.vendor.utility.myComponent.authAPI
 import com.pampiway.vendor.utility.myComponent.authRepo
 import com.pampiway.vendor.utility.myComponent.homeAutoApi
@@ -189,6 +192,10 @@ fun AppNavigation(modifier: Modifier = Modifier) {
     Scaffold(
         drawerContent = {
             // Side Navigation (Drawer content)
+            if(registerViewModel.isErrorDialogVisible.value)
+                mDialog(onDismiss = {
+                myComponent.registerViewModel.hideErrorDialog()
+            })
             SideNav(drawerState = drawerState,
                 selectedRoute = currentRoute ?: "", // Pass the current route dynamically
                 onItemSelected = { route ->
@@ -248,6 +255,10 @@ fun AppNavigation(modifier: Modifier = Modifier) {
 
                 composable("account") {
                     AccountScreen(navController)
+                }
+
+                composable("Logout") {
+                    Logout()
                 }
             }
         }
@@ -529,7 +540,9 @@ fun WalletScreen(navController: NavController, drawerState: DrawerState) {
                     Image(
                         painterResource(id = R.drawable.ic_arrow),
                         contentDescription = "back",
-                        modifier = Modifier.size(32.dp),
+                        modifier = Modifier.size(32.dp).clickable {
+                            myComponent.navController.popBackStack()
+                        },
                         contentScale = ContentScale.Fit
                     )
 
@@ -554,11 +567,15 @@ fun WalletScreen(navController: NavController, drawerState: DrawerState) {
 
             // Wallet content
             Column(
-                modifier = Modifier.fillMaxWidth().height(200.dp).padding(12.dp).border(
-                    width = 2.dp,
-                    color = mred, // Change to your desired border color
-                    shape = RoundedCornerShape(12.dp) // Adjust the corner radius as needed
-                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .padding(12.dp)
+                    .border(
+                        width = 2.dp,
+                        color = mred, // Change to your desired border color
+                        shape = RoundedCornerShape(12.dp) // Adjust the corner radius as needed
+                    ),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -655,7 +672,7 @@ fun inputComponent(text: String){
 }
 */
 
-@Composable
+/*@Composable
 fun inputComponent(text: String, value: String, onValueChange: (String) -> Unit) {
     Text(
         text = text,
@@ -683,12 +700,64 @@ fun inputComponent(text: String, value: String, onValueChange: (String) -> Unit)
     )
 
     Spacer(modifier = Modifier.height(14.dp))
+}*/
+
+
+@Composable
+fun inputComponent(
+    text: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    errorMessage: String? = null
+) {
+    Column {
+        Text(
+            text = text,
+            style = TextStyle(
+                fontFamily = mFont.fsregular,
+                color = darkGrey,
+                fontSize = 17.sp
+            )
+        )
+
+        Spacer(modifier = Modifier.height(6.dp))
+
+        InputText(
+            modifier = Modifier
+                .padding(top = 2.dp, bottom = 4.dp),
+            text = value,
+            color = Color.Black,
+            maxLine = 1,
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next,
+                keyboardType = keyboardType
+            ),
+            onTextChange = onValueChange,
+            maxLength = if (keyboardType == KeyboardType.Number) 10 else Int.MAX_VALUE
+        )
+
+        if (!errorMessage.isNullOrEmpty()) {
+            Text(
+                text = errorMessage,
+                style = TextStyle(
+                    color = Color.Red,
+                    fontSize = 14.sp
+                )
+            )
+        }
+
+        Spacer(modifier = Modifier.height(14.dp))
+    }
 }
+
+
 @Composable
 fun inputText(text: String) {
 
     var inputEmail by remember { mutableStateOf("") }
     var inputPassword by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf("") }
 
     Text(text = "E-Mail",
         style = TextStyle(
@@ -710,7 +779,7 @@ fun inputText(text: String) {
             imeAction = ImeAction.Next,
             keyboardType = KeyboardType.Email),
         onTextChange = { inputEmail = it },
-        maxLength = 10
+        maxLength = 50
     )
 
 
@@ -740,11 +809,10 @@ fun inputText(text: String) {
         ),
         onTextChange = { inputPassword = it },
         onImeAction = { /* Handle Done action */ },
-        maxLength = 10
+        maxLength = 50
     )
 
     Spacer(modifier = Modifier.height(4.dp))
-
 
     Text(
         text = "Forgot Password",
@@ -757,20 +825,51 @@ fun inputText(text: String) {
         modifier = Modifier.fillMaxWidth() // Make the Text take the maximum width
     )
 
+    Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = errorMessage,
+            style = TextStyle(
+                color = mred,
+                fontSize = 14.sp,
+                fontFamily = mFont.fsregular
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+
 
     Spacer(modifier = Modifier.height(48.dp))
-    
-    SmallButton(onClick = {
-        navController.navigate("Home")
-    }, text = "Submit")
+
+    SmallButton(
+        onClick = {
+            when {
+                inputEmail.isBlank() -> {
+                    errorMessage = "Email cannot be empty"
+                }
+                !android.util.Patterns.EMAIL_ADDRESS.matcher(inputEmail).matches() -> {
+                    errorMessage = "Invalid email address"
+                }
+                inputPassword.isBlank() -> {
+                    errorMessage = "Password cannot be empty"
+                }
+                else -> {
+                    errorMessage = ""
+                    // Navigate to Home and clear the backstack
+                    navController.navigate("Home") {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            }
+        },
+        text = "Submit"
+    )
 
     Spacer(modifier = Modifier.height(12.dp))
 
-    
     SmallButtonBorder(onClick = {
         navController.navigate("register")
     }, text = "Become A Delivery Partner")
-    
+
 
 }
 

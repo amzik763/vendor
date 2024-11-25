@@ -1,5 +1,6 @@
 package com.amzi.mastercellusv2.networks
 
+import com.pampiway.vendor.response.createAccountRes
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -18,7 +19,7 @@ interface AuthAPIs {
         @Field("state") state: String,
         @Field("pincode") pincode: Int,
         @Field("confirm_password") confirmPassword: String
-    ): Response<String>
+    ): Response<createAccountRes>
 
 
 

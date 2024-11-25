@@ -1,6 +1,7 @@
 package com.amzi.mastercellusv2.repository
 
 import android.content.Context
+import android.widget.Toast
 import com.amzi.mastercellusv2.networks.HomeAutoApi
 import com.pampiway.vendor.utility.TokenStorage
 import com.pampiway.vendor.utility.showLogs
@@ -60,20 +61,25 @@ class DeliveryRepo(val homeAutoApi: HomeAutoApi, private val context: Context) {
         pincode: String,
         password: String,
         confirmPassword: String
-    ) {
+    ) :Boolean{
 
-        try {
+        return try {
 
             val res = homeAutoApi.createAccount(email, password, name, phoneNumber, city, district, state, Integer.parseInt(pincode), confirmPassword )
 
             if(res.isSuccessful){
                 showLogs("API FAILED", "API SUCCESS")
+                return true
 
             }else{
                 showLogs("API FAILED", "API FAILED")
+                Toast.makeText(context,"Error",Toast.LENGTH_SHORT)
+                return false
             }
         }catch (e:Exception){
+            showLogs("bigerror",e.printStackTrace().toString())
             showLogs("API FAILED", "API ERROR")
+            return false
 
         }
 

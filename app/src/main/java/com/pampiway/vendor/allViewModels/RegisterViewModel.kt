@@ -9,8 +9,15 @@ import com.pampiway.vendor.utility.showLogs
 import kotlinx.coroutines.launch
 
 class RegisterViewModel(authRepo: AuthRepo, deliveryRepo: DeliveryRepo) : ViewModel() {
+
+    var errors: MutableMap<String, String>? = null
+    var isErrorDialogVisible = mutableStateOf(false)
+
+    var errorMessage = mutableStateOf("")
+
     var mPassword = mutableStateOf("")
     var mUsername = mutableStateOf("")
+
 
     // Use mutableStateOf to track UI-related state changes
     var username = mutableStateOf("")
@@ -25,7 +32,8 @@ class RegisterViewModel(authRepo: AuthRepo, deliveryRepo: DeliveryRepo) : ViewMo
 //    val folders = mutableStateListOf<String>()
     init {
 
-     }
+    }
+
     var authRepo: AuthRepo = authRepo
     var hmeAutoRepo: DeliveryRepo = deliveryRepo
 
@@ -37,7 +45,7 @@ class RegisterViewModel(authRepo: AuthRepo, deliveryRepo: DeliveryRepo) : ViewMo
         }
     }
 
-     fun createAccount(
+    suspend fun createAccount(
         name: String,
         phoneNumber: String,
         email: String,
@@ -47,20 +55,27 @@ class RegisterViewModel(authRepo: AuthRepo, deliveryRepo: DeliveryRepo) : ViewMo
         pincode: String,
         password: String,
         confirmPassword: String
-    ) {
-viewModelScope.launch {
-    hmeAutoRepo.createAccount(
-        name,
-        phoneNumber,
-        email,
-        city,
-        district,
-        state,
-        pincode,
-        password,
-        confirmPassword
-    )
-}
+    ): Boolean {
+            return hmeAutoRepo.createAccount(
+                name,
+                phoneNumber,
+                email,
+                city,
+                district,
+                state,
+                pincode,
+                password,
+                confirmPassword
+            )
+    }
+
+    fun hideErrorDialog() {
+        isErrorDialogVisible.value = false
+    }
+
+
+    fun showErrorDialog() {
+        isErrorDialogVisible.value = true
     }
 }
 

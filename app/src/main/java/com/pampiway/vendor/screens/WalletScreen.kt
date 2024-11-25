@@ -2,6 +2,7 @@ package com.pampiway.vendor.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,6 +37,7 @@ import com.pampiway.vendor.SideNav
 import com.pampiway.vendor.TopBar
 import com.pampiway.vendor.ui.theme.lightBlack
 import com.pampiway.vendor.utility.mFont
+import com.pampiway.vendor.utility.myComponent
 import kotlinx.coroutines.launch
 
 @Composable
@@ -54,7 +56,9 @@ fun WalletScreen2(navController: NavController) {
             Image(
                 painterResource(id = R.drawable.ic_arrow),
                 contentDescription = "back",
-                modifier = Modifier.size(32.dp),
+                modifier = Modifier.size(32.dp).clickable {
+                    myComponent.navController.popBackStack()
+                },
                 contentScale = ContentScale.Fit)
 
 
