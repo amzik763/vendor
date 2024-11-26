@@ -12,6 +12,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -53,6 +55,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -138,7 +143,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        enableEdgeToEdge()
+//        enableEdgeToEdge()
+
         authAPI = RetrofitBuilder.create(this).create(AuthAPIs::class.java)
         homeAutoApi = RetrofitBuilder.create(this).create(HomeAutoApi::class.java)
         authRepo = AuthRepo(authAPI, context = applicationContext)
@@ -485,7 +491,7 @@ fun DashboardScreen(navController: NavController,
     ) {
         val coroutineScope = rememberCoroutineScope()
         // Dashboard content
-        Column() {
+        Column {
             TopBar(
                 switchOn = switchOn,
                 onMenuClick = { coroutineScope.launch {
@@ -495,7 +501,119 @@ fun DashboardScreen(navController: NavController,
                 isChecked = switchOn,
                 onToggleChange = onToggleChange
             )
-            Text("Welcome to the Dashboard!")
+
+            CustomRowUI()
+        }
+    }
+}
+@Composable
+fun CustomRowUI() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(90.dp)
+            .padding(vertical = 10.dp)
+    ) {
+        // Shadow Layer
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+                .offset(y = 3.dp) // Offset shadow below
+                .blur(16.dp) // Blur for shadow softness
+                .background(
+                    color = Color.Gray.copy(alpha = 0.3f), // Semi-transparent shadow
+                    shape = RoundedCornerShape(0.dp)
+                )
+        )
+
+        // Actual Content Layer
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+                .background(color = Color.White, shape = RoundedCornerShape(0.dp))
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Column A: Square Image
+                Column(
+                    modifier = Modifier
+                        .size(60.dp)
+                        .offset(x = (-30).dp) // Offset horizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_pizza), // Replace with your image
+                        contentDescription = "Square Image",
+                        modifier = Modifier
+                            .size(60.dp)
+                            .clip(RoundedCornerShape(8.dp)),
+                        contentScale = ContentScale.Fit
+                    )
+                }
+
+                // Column B:
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(0.7f) // Approx. 70% width
+                        .fillMaxHeight(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(
+                        text = "Food Delivery",
+                        color = lightBlack,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        fontFamily = mFont.fsmedium
+                    )
+                    Text(
+                        text = "Aadhar Mart",
+                        color = mred,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = mFont.fssemibold
+                    )
+                    Text(
+                        text = "Baswa Road Mela ka Chola",
+                        color = darkGrey,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Normal,
+                        fontFamily = mFont.fsregular
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(12.dp)) // Spacer between columns
+
+                // Column C: Two texts aligned center
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth() // Approx. 30% width
+                        .fillMaxHeight(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "10",
+                        color = mred,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        fontFamily = mFont.fsmedium,
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = "Mins",
+                        color = lightBlack,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = mFont.fssemibold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
         }
     }
 }
@@ -540,9 +658,11 @@ fun WalletScreen(navController: NavController, drawerState: DrawerState) {
                     Image(
                         painterResource(id = R.drawable.ic_arrow),
                         contentDescription = "back",
-                        modifier = Modifier.size(32.dp).clickable {
-                            myComponent.navController.popBackStack()
-                        },
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable {
+                                myComponent.navController.popBackStack()
+                            },
                         contentScale = ContentScale.Fit
                     )
 
