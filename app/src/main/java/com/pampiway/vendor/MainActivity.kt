@@ -59,6 +59,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -82,17 +83,27 @@ import com.amzi.mastercellusv2.networks.HomeAutoApi
 import com.amzi.mastercellusv2.networks.RetrofitBuilder
 import com.amzi.mastercellusv2.repository.AuthRepo
 import com.amzi.mastercellusv2.repository.DeliveryRepo
+import com.pampiway.vendor.components.CenterSwipeButton
+import com.pampiway.vendor.components.CenterSwipeButton2
 import com.pampiway.vendor.components.InputText
 import com.pampiway.vendor.components.InputTextWithIcon
 import com.pampiway.vendor.components.SmallButton
 import com.pampiway.vendor.components.SmallButtonBorder
+import com.pampiway.vendor.components.SwipeButton
 import com.pampiway.vendor.screens.CreateAccountScreen
 import com.pampiway.vendor.screens.CreateRegister
+import com.pampiway.vendor.screens.EditProfile
 import com.pampiway.vendor.screens.HelpSupport
 import com.pampiway.vendor.screens.History
 import com.pampiway.vendor.screens.Logout
 import com.pampiway.vendor.screens.Notification
+import com.pampiway.vendor.screens.NotificationUser
 import com.pampiway.vendor.screens.WalletScreen2
+import com.pampiway.vendor.screens.myMenu
+import com.pampiway.vendor.screens.orderPlaced
+import com.pampiway.vendor.screens.orderPlacing
+import com.pampiway.vendor.screens.ratingScreen
+import com.pampiway.vendor.screens.referandearnscreen
 import com.pampiway.vendor.ui.theme.VendorTheme
 import com.pampiway.vendor.ui.theme.darkGrey
 import com.pampiway.vendor.ui.theme.lightBlack
@@ -224,7 +235,14 @@ fun AppNavigation(modifier: Modifier = Modifier) {
             // Setup the NavHost to manage screen navigation
             NavHost(navController = navController, startDestination = "auth") {
                 composable("auth") {
-                    AuthScreen()
+//                    AuthScreen()
+//                EditProfile()
+//                    ratingScreen(navController = navController)
+//                    myMenu()
+//                    orderPlaced()
+//                    orderPlacing()
+//                    NotificationUser(navController)
+                    referandearnscreen()
                 }
                 composable("register") {
                     RegisterScreen()
@@ -502,12 +520,12 @@ fun DashboardScreen(navController: NavController,
                 onToggleChange = onToggleChange
             )
 
-            CustomRowUI()
+            Header()
         }
     }
 }
 @Composable
-fun CustomRowUI() {
+fun Header() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -520,11 +538,15 @@ fun CustomRowUI() {
                 .fillMaxWidth()
                 .height(80.dp)
                 .offset(y = 3.dp) // Offset shadow below
-                .blur(16.dp) // Blur for shadow softness
-                .background(
-                    color = Color.Gray.copy(alpha = 0.3f), // Semi-transparent shadow
+                .graphicsLayer {
+                    shadowElevation = 4.dp.toPx() // Use elevation for shadow
                     shape = RoundedCornerShape(0.dp)
-                )
+                    clip = false
+                } // Blur for shadow softness
+//                .background(
+////                    color = Color.Gray.copy(alpha = 0.3f), // Semi-transparent shadow
+//                    shape = RoundedCornerShape(0.dp)
+//                )
         )
 
         // Actual Content Layer
@@ -822,175 +844,5 @@ fun inputComponent(text: String, value: String, onValueChange: (String) -> Unit)
     Spacer(modifier = Modifier.height(14.dp))
 }*/
 
-
-@Composable
-fun inputComponent(
-    text: String,
-    value: String,
-    onValueChange: (String) -> Unit,
-    keyboardType: KeyboardType = KeyboardType.Text,
-    errorMessage: String? = null
-) {
-    Column {
-        Text(
-            text = text,
-            style = TextStyle(
-                fontFamily = mFont.fsregular,
-                color = darkGrey,
-                fontSize = 17.sp
-            )
-        )
-
-        Spacer(modifier = Modifier.height(6.dp))
-
-        InputText(
-            modifier = Modifier
-                .padding(top = 2.dp, bottom = 4.dp),
-            text = value,
-            color = Color.Black,
-            maxLine = 1,
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Next,
-                keyboardType = keyboardType
-            ),
-            onTextChange = onValueChange,
-            maxLength = if (keyboardType == KeyboardType.Number) 10 else Int.MAX_VALUE
-        )
-
-        if (!errorMessage.isNullOrEmpty()) {
-            Text(
-                text = errorMessage,
-                style = TextStyle(
-                    color = Color.Red,
-                    fontSize = 14.sp
-                )
-            )
-        }
-
-        Spacer(modifier = Modifier.height(14.dp))
-    }
-}
-
-
-@Composable
-fun inputText(text: String) {
-
-    var inputEmail by remember { mutableStateOf("") }
-    var inputPassword by remember { mutableStateOf("") }
-    var errorMessage by remember { mutableStateOf("") }
-
-    Text(text = "E-Mail",
-        style = TextStyle(
-            fontFamily = mFont.fsregular,
-            color = darkGrey,
-            fontSize = 18.sp
-        )
-    )
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    InputText(
-        modifier = Modifier
-            .padding(top = 2.dp, bottom = 4.dp),
-        text = inputEmail,
-        color = Color.Black,
-        maxLine = 1,
-        keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Next,
-            keyboardType = KeyboardType.Email),
-        onTextChange = { inputEmail = it },
-        maxLength = 50
-    )
-
-
-    Spacer(modifier = Modifier.height(20.dp))
-
-    Text(text = "Password",
-        style = TextStyle(
-            fontFamily = mFont.fsregular,
-            color = darkGrey,
-            fontSize = 18.sp
-        )
-    )
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    InputTextWithIcon(
-        modifier = Modifier
-            .padding(top = 2.dp, bottom = 4.dp),
-        text = inputPassword,
-        color = Color.Black,
-        maxLine = 1,
-        iconResIdVisible = R.drawable.ic_eyeopen, // Icon for visible password
-        iconResIdHidden = R.drawable.ic_eyeclose, // Icon for hidden password
-        keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Done,
-            keyboardType = KeyboardType.Password
-        ),
-        onTextChange = { inputPassword = it },
-        onImeAction = { /* Handle Done action */ },
-        maxLength = 50
-    )
-
-    Spacer(modifier = Modifier.height(4.dp))
-
-    Text(
-        text = "Forgot Password",
-        style = TextStyle(
-            fontFamily = mFont.fsregular,
-            color = mblue,
-            fontSize = 15.sp,
-            textAlign = TextAlign.End // Align the text to the end
-        ),
-        modifier = Modifier.fillMaxWidth() // Make the Text take the maximum width
-    )
-
-    Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = errorMessage,
-            style = TextStyle(
-                color = mred,
-                fontSize = 14.sp,
-                fontFamily = mFont.fsregular
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-
-    Spacer(modifier = Modifier.height(48.dp))
-
-    SmallButton(
-        onClick = {
-            when {
-                inputEmail.isBlank() -> {
-                    errorMessage = "Email cannot be empty"
-                }
-                !android.util.Patterns.EMAIL_ADDRESS.matcher(inputEmail).matches() -> {
-                    errorMessage = "Invalid email address"
-                }
-                inputPassword.isBlank() -> {
-                    errorMessage = "Password cannot be empty"
-                }
-                else -> {
-                    errorMessage = ""
-                    // Navigate to Home and clear the backstack
-                    navController.navigate("Home") {
-                        popUpTo(0) { inclusive = true }
-                    }
-                }
-            }
-        },
-        text = "Submit"
-    )
-
-    Spacer(modifier = Modifier.height(12.dp))
-
-    SmallButtonBorder(onClick = {
-        navController.navigate("register")
-    }, text = "Become A Delivery Partner")
-
-
-}
 
 

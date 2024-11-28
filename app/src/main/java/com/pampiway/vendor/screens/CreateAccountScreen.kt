@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pampiway.vendor.components.SmallButton
 import com.pampiway.vendor.components.SmallButtonBorder
-import com.pampiway.vendor.inputComponent
+import com.pampiway.vendor.components.inputComponent
 import com.pampiway.vendor.ui.theme.mred
 import com.pampiway.vendor.utility.mFont
 import com.pampiway.vendor.utility.myComponent
@@ -55,7 +55,6 @@ fun CreateAccountScreen() {
         var pincode by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
         var confirmPassword by remember { mutableStateOf("") }
-
         val scope = rememberCoroutineScope()
 
         Text(
@@ -70,9 +69,6 @@ fun CreateAccountScreen() {
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(36.dp))
-
-
-
 
         inputComponent(
             text = "Name",
@@ -148,7 +144,6 @@ fun CreateAccountScreen() {
 
         Spacer(modifier = Modifier.height(36.dp))
 
-
         SmallButton(onClick = {
             validationTriggered = true
             Log.d("InputScreen", "Name: $name")
@@ -160,9 +155,7 @@ fun CreateAccountScreen() {
             Log.d("InputScreen", "Pincode: $pincode")
             Log.d("InputScreen", "Password: $password")
             Log.d("InputScreen", "Confirm Password: $confirmPassword")
-
             val errors = mutableMapOf<String, String>()
-
             if (name.isEmpty()) errors["name"] = "Name cannot be empty"
             if (phoneNumber.length != 10) errors["phone"] = "Phone number must be 10 digits"
             if (!isValidEmail(email)) errors["email"] = "Invalid email address"
@@ -172,7 +165,6 @@ fun CreateAccountScreen() {
             if (pincode.isEmpty()) errors["pincode"] = "Pincode cannot be empty"
             if (password.length < 8) errors["password"] = "Password must be at least 8 characters"
             if (password != confirmPassword) errors["confirmPassword"] = "Passwords do not match"
-
             if (errors.isEmpty()) {
                 Log.d("InputScreen", "Validated inputs")
                 scope.launch {
@@ -188,22 +180,17 @@ fun CreateAccountScreen() {
                     }else{
 
                     }
-
                 }
             } else {
-
                 registerViewModel.errors = errors
                 Log.d("InputScreen", "Errors: $errors")
 //                myComponent.registerViewModel.showErrorDialog()
             }
-
 //            registerViewModel.createAccount(name, phoneNumber, email, city, district, state, pincode, password, confirmPassword)
 //            navController.navigate("Home")
 
         }, text = "Create")
-
         Spacer(modifier = Modifier.height(6.dp))
-
         SmallButtonBorder(onClick = {
             navController.popBackStack()
         }, text = "Already have an account")

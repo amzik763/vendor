@@ -26,7 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pampiway.vendor.R
-import com.pampiway.vendor.inputText
+import com.pampiway.vendor.components.inputText
 import com.pampiway.vendor.ui.theme.VendorTheme
 import com.pampiway.vendor.ui.theme.lightBlack
 import com.pampiway.vendor.ui.theme.mred

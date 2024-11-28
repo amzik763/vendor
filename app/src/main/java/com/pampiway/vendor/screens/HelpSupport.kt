@@ -41,7 +41,6 @@ import com.pampiway.vendor.components.InputTextLarge
 import com.pampiway.vendor.components.InputTextWithIcon
 import com.pampiway.vendor.components.SmallButton
 import com.pampiway.vendor.components.SmallButtonBorder
-import com.pampiway.vendor.inputText
 import com.pampiway.vendor.ui.theme.darkGrey
 import com.pampiway.vendor.ui.theme.lightBlack
 import com.pampiway.vendor.ui.theme.mblue

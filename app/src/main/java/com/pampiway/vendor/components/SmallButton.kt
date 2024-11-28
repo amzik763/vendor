@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.Composable
+import com.pampiway.vendor.ui.theme.darkGrey
 import com.pampiway.vendor.ui.theme.mred
 import com.pampiway.vendor.utility.mFont
 
@@ -70,11 +71,82 @@ fun SmallButtonBorder(
             contentColor = contentColor
         ),
         contentPadding = PaddingValues(0.dp),
-        modifier = modifier
+        modifier = modifier.padding(bottom = 16.dp)
             .fillMaxWidth()
             .height(45.dp)
             .border(
                 BorderStroke(2.dp, borderColor), // Add border with specified color
+                shape = RoundedCornerShape(cornerRadius)
+            )
+    ) {
+        Text(
+            text = text,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            fontFamily = mFont.fsmedium,
+            color = contentColor, // Match text color with contentColor
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+        )
+    }
+}
+
+
+
+@Composable
+fun SmallButtonRounded(
+    onClick: () -> Unit,
+    text: String,
+    modifier: Modifier = Modifier,
+    cornerRadius: Dp = 5.dp,
+    backgroundColor: Color = mred,
+    contentColor: Color = Color.White,
+) {
+    Button(
+        onClick = onClick,
+        shape = RoundedCornerShape(cornerRadius),
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = backgroundColor,
+            contentColor = contentColor
+        ),
+        contentPadding = PaddingValues(0.dp),
+
+        modifier = modifier
+            .fillMaxWidth(0.65f).height(45.dp)
+    ) {
+        Text(text = text,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.SemiBold,
+            fontFamily = mFont.fsmedium,
+            color = Color.White,
+            modifier = Modifier
+                .padding(horizontal = 8.dp))
+    }
+}
+
+@Composable
+fun SmallButtonBorderRounded(
+    onClick: () -> Unit,
+    text: String,
+    modifier: Modifier = Modifier,
+    cornerRadius: Dp = 5.dp,
+    backgroundColor: Color = Color.White, // Transparent background for border effect
+    borderColor: Color = mred, // Border color
+    contentColor: Color = darkGrey, // Content color
+) {
+    Button(
+        onClick = onClick,
+        shape = RoundedCornerShape(cornerRadius),
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = backgroundColor,
+            contentColor = contentColor
+        ),
+        contentPadding = PaddingValues(0.dp),
+        modifier = modifier.padding(bottom = 16.dp)
+            .fillMaxWidth(0.7f)
+            .height(45.dp)
+            .border(
+                BorderStroke(1.5.dp, borderColor), // Add border with specified color
                 shape = RoundedCornerShape(cornerRadius)
             )
     ) {

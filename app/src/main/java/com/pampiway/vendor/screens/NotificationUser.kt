@@ -51,33 +51,35 @@ import com.pampiway.vendor.ui.theme.darkGrey
 import com.pampiway.vendor.ui.theme.lightBlack
 import com.pampiway.vendor.ui.theme.lightGrey
 import com.pampiway.vendor.ui.theme.mblue
+import com.pampiway.vendor.ui.theme.mgreen
+import com.pampiway.vendor.ui.theme.mgreyish
 import com.pampiway.vendor.ui.theme.mred
 import com.pampiway.vendor.utility.mFont
 import com.pampiway.vendor.utility.myComponent.navController
 
 
-data class NotificationItem(
+data class NotificationItemUser(
     val imageRes: Int,
     val title: String,
     val subtitle: String
 )
 
 @Composable
-fun Notification(navController: NavHostController) {
+fun NotificationUser(navController: NavHostController) {
 
     val notifications = listOf(
         NotificationItem(
-            imageRes = R.drawable.ic_reward,
+            imageRes = R.drawable.ic_giftred,
             title = "You have a new offer: ₹75 flat on 10 order completions",
             subtitle = "Redeem your rewards"
         ),
         NotificationItem(
-            imageRes = R.drawable.ic_reward,
+            imageRes = R.drawable.ic_giftred,
             title = "Exclusive Discount: Get 20% off on your next order",
             subtitle = "Offer valid till tomorrow"
         ),
         NotificationItem(
-            imageRes = R.drawable.ic_reward,
+            imageRes = R.drawable.ic_giftred,
             title = "Congratulations! You've earned a bonus",
             subtitle = "Check your wallet for details"
         )
@@ -88,7 +90,7 @@ fun Notification(navController: NavHostController) {
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.White)
-            .padding(vertical = 16.dp, horizontal = 12.dp)
+            .padding(horizontal = 12.dp)
     ){
         Row(modifier = Modifier
             .fillMaxWidth()
@@ -114,9 +116,8 @@ fun Notification(navController: NavHostController) {
             thickness = 4.dp,                // Set the thickness of the divider
             modifier = Modifier.fillMaxWidth() // Make the divider take full width
         )
-        Spacer(modifier = Modifier.height(4.dp))
 
-        NotificationList(notifications = notifications)
+        NotificationListUser(notifications = notifications)
 
     }
 
@@ -124,12 +125,12 @@ fun Notification(navController: NavHostController) {
 }
 
 @Composable
-fun NotificationList(notifications: List<NotificationItem>) {
+fun NotificationListUser(notifications: List<NotificationItem>) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()
     ) {
         items(notifications) { notification ->
-            NotificationContent(
+            NotificationContentUser(
                 imageRes = notification.imageRes,
                 title = notification.title,
                 subtitle = notification.subtitle
@@ -139,7 +140,7 @@ fun NotificationList(notifications: List<NotificationItem>) {
 }
 
 @Composable
-fun NotificationContent(
+fun NotificationContentUser(
     imageRes: Int,
     title: String,
     subtitle: String
@@ -148,11 +149,7 @@ fun NotificationContent(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .border(
-                width = 1.5.dp,
-                color = mred,
-                shape = RoundedCornerShape(12.dp)
-            ),
+            .background(mgreyish, shape = RoundedCornerShape(8.dp)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -189,12 +186,12 @@ fun NotificationContent(
                         fontSize = 17.sp
                     )
                 )
-                Spacer(modifier = Modifier.height(4.dp)) // Space between title and subtitle
-                Text(
+                Spacer(modifier = Modifier.height(10.dp)) // Space between title and subtitle
+                Text(modifier = Modifier.padding(bottom = 10.dp),
                     text = subtitle,
                     style = TextStyle(
-                        fontFamily = mFont.fsbold,
-                        color = lightGrey,
+                        fontFamily = mFont.fsmedium,
+                        color = darkGrey,
                         fontSize = 14.sp
                     )
                 )
