@@ -99,7 +99,10 @@ import com.pampiway.vendor.screens.History
 import com.pampiway.vendor.screens.Logout
 import com.pampiway.vendor.screens.Notification
 import com.pampiway.vendor.screens.NotificationUser
+import com.pampiway.vendor.screens.ParcelScreen
 import com.pampiway.vendor.screens.WalletScreen2
+import com.pampiway.vendor.screens.bookingScreen
+import com.pampiway.vendor.screens.carTravelScreen
 import com.pampiway.vendor.screens.couponscreen
 import com.pampiway.vendor.screens.myMenu
 import com.pampiway.vendor.screens.orderPlaced
@@ -246,7 +249,10 @@ fun AppNavigation(modifier: Modifier = Modifier) {
 //                    NotificationUser(navController)
 //                    referandearnscreen()
 //                      couponscreen()
-                    SmallComponents()
+//                    SmallComponents()
+//                    ParcelScreen(navController = navController)
+//                    carTravelScreen(navController)
+                    bookingScreen(navController)
                 }
                 composable("register") {
                     RegisterScreen()

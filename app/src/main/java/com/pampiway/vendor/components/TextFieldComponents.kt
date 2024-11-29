@@ -49,6 +49,7 @@ import com.pampiway.vendor.ui.theme.darkGrey
 import com.pampiway.vendor.ui.theme.lightBlack
 import com.pampiway.vendor.ui.theme.lightOrange
 import com.pampiway.vendor.ui.theme.mblue
+import com.pampiway.vendor.ui.theme.medGrey
 import com.pampiway.vendor.ui.theme.mred
 import com.pampiway.vendor.utility.mFont
 import com.pampiway.vendor.utility.myComponent.navController
@@ -66,7 +67,7 @@ fun InputText(
     keyboardOptions: KeyboardOptions
 ) {
     var isFocused by remember { mutableStateOf(false) }
-    val borderColor = if (isFocused) mred else lightBlack // Conditional border color
+    val borderColor = if (isFocused) mred else medGrey // Conditional border color
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -111,11 +112,11 @@ fun InputText(
             )
 
             // Clear Icon
-            if (text.isNotEmpty()) {
+            if (text.isNotEmpty() && isFocused) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_close2), // Replace with your icon resource
                     contentDescription = "Clear text",
-                    modifier = Modifier
+                    modifier = Modifier.padding(end = 4.dp)
                         .size(16.dp)
                         .clickable {
                             onTextChange("") // Clear the text
