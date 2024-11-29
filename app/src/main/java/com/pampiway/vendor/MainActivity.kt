@@ -89,6 +89,7 @@ import com.pampiway.vendor.components.InputText
 import com.pampiway.vendor.components.InputTextWithIcon
 import com.pampiway.vendor.components.SmallButton
 import com.pampiway.vendor.components.SmallButtonBorder
+import com.pampiway.vendor.components.SmallComponents
 import com.pampiway.vendor.components.SwipeButton
 import com.pampiway.vendor.screens.CreateAccountScreen
 import com.pampiway.vendor.screens.CreateRegister
@@ -99,6 +100,7 @@ import com.pampiway.vendor.screens.Logout
 import com.pampiway.vendor.screens.Notification
 import com.pampiway.vendor.screens.NotificationUser
 import com.pampiway.vendor.screens.WalletScreen2
+import com.pampiway.vendor.screens.couponscreen
 import com.pampiway.vendor.screens.myMenu
 import com.pampiway.vendor.screens.orderPlaced
 import com.pampiway.vendor.screens.orderPlacing
@@ -242,7 +244,9 @@ fun AppNavigation(modifier: Modifier = Modifier) {
 //                    orderPlaced()
 //                    orderPlacing()
 //                    NotificationUser(navController)
-                    referandearnscreen()
+//                    referandearnscreen()
+//                      couponscreen()
+                    SmallComponents()
                 }
                 composable("register") {
                     RegisterScreen()

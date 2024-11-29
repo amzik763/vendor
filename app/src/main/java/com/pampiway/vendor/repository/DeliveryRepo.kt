@@ -3,6 +3,7 @@ package com.amzi.mastercellusv2.repository
 import android.content.Context
 import android.widget.Toast
 import com.amzi.mastercellusv2.networks.HomeAutoApi
+import com.google.gson.Gson
 import com.pampiway.vendor.response.createAccountRes
 import com.pampiway.vendor.utility.TokenStorage
 import com.pampiway.vendor.utility.myComponent
@@ -66,12 +67,15 @@ class DeliveryRepo(val homeAutoApi: HomeAutoApi, private val context: Context) {
         confirmPassword: String
     ) :Boolean{
 
-        return try {
+        try {
 
             val res = homeAutoApi.createAccount(email, password, name, phoneNumber, city, district, state, Integer.parseInt(pincode), confirmPassword )
+            showLogs("Full res:",res.errorBody().toString())
             if(res.isSuccessful){
                 showLogs("API SUC", "API SUCCESS")
                 showLogs("API SUC", res.body().toString())
+                showLogs("API SUCE", res.errorBody().toString())
+                showLogs("API SUCE", res.message().toString())
                 myComponent.registerViewModel.showErrorDialog()
                 myComponent.registerViewModel.createAccountRes =  res.body()
                 showLogs("API SUCCESS",  myComponent.registerViewModel.createAccountRes?.message?:"")
@@ -79,15 +83,17 @@ class DeliveryRepo(val homeAutoApi: HomeAutoApi, private val context: Context) {
                 return true
 
             }else{
-                showLogs("API FAILED", "API FAILED")
-                showLogs("API FAiled", res.body().toString())
-
-                myComponent.registerViewModel.createAccountRes =  res.body()
-                showLogs("API FAILED", res.message()?:"Error")
-                showLogs("API failed errorbody", res.errorBody().toString()?:"Error")
-                showLogs("API FAILED",  myComponent.registerViewModel.createAccountRes?.message?:"")
+                // Response not successful, parse error body
+                val errorResponse = res.errorBody()?.string()
+                val errorData = errorResponse?.let { parseErrorResponse(it) }
+                showLogs("API FAILED", errorResponse ?: "Unknown error")
+                if (errorData != null) {
+                    myComponent.registerViewModel.createAccountRes = errorData
+                    myComponent.registerViewModel.errorMessage.value = errorData.message
+                } else {
+                    myComponent.registerViewModel.errorMessage.value = "Error! Unable to parse response."
+                }
                 myComponent.registerViewModel.showErrorDialog()
-                myComponent.registerViewModel.errorMessage.value = res.body()?.message?:"Error! Try again"
                 return false
             }
         }catch (e:Exception){
@@ -102,4 +108,14 @@ class DeliveryRepo(val homeAutoApi: HomeAutoApi, private val context: Context) {
     }
 
 
+}
+
+fun parseErrorResponse(errorBody: String): createAccountRes? {
+    return try {
+        val gson = Gson() // Use Gson or any JSON parser
+        gson.fromJson(errorBody, createAccountRes::class.java)
+    } catch (e: Exception) {
+        showLogs("ERROR PARSING", e.message.toString())
+        null
+    }
 }
