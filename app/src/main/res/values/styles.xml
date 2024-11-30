@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Custom DatePickerDialog Theme -->
+    <!--<style name="CustomDatePickerTheme" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="colorPrimary">#FF6200EE</item> &lt;!&ndash; Header background color &ndash;&gt;
+        <item name="colorOnPrimary">#FFFFFF</item> &lt;!&ndash; Header text color &ndash;&gt;
+        <item name="colorSurface">#FFBB86FC</item> &lt;!&ndash; Background color &ndash;&gt;
+        <item name="colorOnSurface">#000000</item> &lt;!&ndash; Text color &ndash;&gt;
+    </style>-->
+</resources>

@@ -2,4 +2,11 @@
 <resources>
 
     <style name="Theme.Vendor" parent="android:Theme.Material.Light.NoActionBar" />
+<!--    <style name="ThemeOverlay.MyApp.Dialog" parent="@style/ThemeOverlay.MaterialComponents.Dialog">-->
+<!--        <item name="colorSecondary">@color/red500_light</item>-->
+<!--        <item name="colorPrimary">@color/blu500_dark</item> &lt;!&ndash; button text color &ndash;&gt;-->
+<!--    </style>-->
+
+
 </resources>
+

@@ -85,6 +85,7 @@ import com.amzi.mastercellusv2.repository.AuthRepo
 import com.amzi.mastercellusv2.repository.DeliveryRepo
 import com.pampiway.vendor.components.CenterSwipeButton
 import com.pampiway.vendor.components.CenterSwipeButton2
+import com.pampiway.vendor.components.DatePickerDemo
 import com.pampiway.vendor.components.InputText
 import com.pampiway.vendor.components.InputTextWithIcon
 import com.pampiway.vendor.components.SmallButton
@@ -109,6 +110,7 @@ import com.pampiway.vendor.screens.orderPlaced
 import com.pampiway.vendor.screens.orderPlacing
 import com.pampiway.vendor.screens.ratingScreen
 import com.pampiway.vendor.screens.referandearnscreen
+import com.pampiway.vendor.screens.shopscreen
 import com.pampiway.vendor.ui.theme.VendorTheme
 import com.pampiway.vendor.ui.theme.darkGrey
 import com.pampiway.vendor.ui.theme.lightBlack
@@ -252,7 +254,10 @@ fun AppNavigation(modifier: Modifier = Modifier) {
 //                    SmallComponents()
 //                    ParcelScreen(navController = navController)
 //                    carTravelScreen(navController)
-                    bookingScreen(navController)
+//                    bookingScreen(navController)
+//                    ElectricianScreen(navController)
+//                    shopscreen(navController)
+                    DatePickerDemo()
                 }
                 composable("register") {
                     RegisterScreen()
